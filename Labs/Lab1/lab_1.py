@@ -10,13 +10,10 @@ import signal
 JOINT_NAME = "leg_front_l_3" 
 JOINT_NAME_LEAD = "leg_front_r_3" 
 
-####
-####
-KP = 5.000000 # YOUR KP VALUE
-KI = 0.600000 # YOUR KI VALUE
-KD = 0.200000 # YOUR KD VALUE
-####
-####
+KP = 5.000000 
+KI = 0.600000 
+KD = 0.200000 
+
 LOOP_RATE = 200  # Hz
 DELTA_T = 1 / LOOP_RATE
 MAX_TORQUE = 2.0
@@ -70,8 +67,6 @@ class JointStateSubscriber(Node):
         return torque
 
     def calculate_torque_for_leg_tracking(self, joint_pos, joint_vel, target_joint_pos, target_joint_vel):
-        ####
-        #### YOUR CODE HERE
         e = target_joint_pos - joint_pos
         self.last_joint_error = target_joint_vel - joint_vel
         self.sum_joint_error += e * DELTA_T
@@ -80,12 +75,8 @@ class JointStateSubscriber(Node):
         torque_P = KP * e
         torque_PD = KP * e + KD * self.last_joint_error
         torque_PID = KP * e + KI * self.sum_joint_error + KD * self.last_joint_error
-        ####
         torque = torque_PID
 
-
-
-        # Leave this code unchanged
         if torque > 0:
             torque = max(torque, DEAD_BAND_SIZE)
         elif torque < 0:
