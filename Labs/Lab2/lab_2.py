@@ -113,17 +113,12 @@ class ForwardKinematics(Node):
     def forward_kinematics_f(self, theta1, theta2, theta3):
         # T_0_1 (base_link to leg_front_l_1)
         T_0_1 = self.translation(0.07500, 0.0445, 0) @ self.rotation_y(theta1)
-        print("a",theta1)
         
         # T_1_2 (leg_front_l_1 to leg_front_l_2)
         T_1_2 = self.translation(0, 0.04, 0) @ self.rotation_x(-theta2)
-        print("b",theta2)
-       
         
         # T_2_3 (leg_front_l_2 to leg_front_l_3)
-        T_2_3 = self.translation(-0.072, 0, -0.06) @ self.rotation_y(theta3)
-        print("c",theta3)
-        
+        T_2_3 = self.translation(-0.072, 0, -0.06) @ self.rotation_y(theta3)        
 
         # T_3_ee (leg_front_l_3 to end-effector)
         T_3_ee = self.translation(0.095, 0.015, -0.015)
@@ -140,15 +135,12 @@ class ForwardKinematics(Node):
     def forward_kinematics_b(self, theta1, theta2, theta3):
         # T_0_1 (base_link to leg_front_l_1)
         T_0_1 = self.translation(-0.07500, 0.0325, 0) @ self.rotation_y(theta1)
-        print("d",theta1)
 
         # T_1_2 (leg_front_l_1 to leg_front_l_2)
-        T_1_2 = self.translation(0, 0.04, 0) @ self.rotation_x(theta2)
-        print("e",theta2)
+        T_1_2 = self.translation(0, 0.04, 0) @ self.rotation_x(-theta2)
         
         # T_2_3 (leg_front_l_2 to leg_front_l_3)
         T_2_3 = self.translation(-0.072, 0, -0.06) @ self.rotation_y(theta3)
-        print("f",theta3)
 
         # T_3_ee (leg_front_l_3 to end-effector)
         T_3_ee = self.translation(0.095, 0.015, -0.015)
@@ -176,7 +168,7 @@ class ForwardKinematics(Node):
             end_effector_position_f = self.forward_kinematics_f(theta1_f, theta2_f, theta3_f)
             end_effector_position_b = self.forward_kinematics_b(theta1_b, theta2_b, theta3_b)
 
-            THRESHOLD = 0.03
+            THRESHOLD = 0.04
 
             distance = math.sqrt(((end_effector_position_f[0] - end_effector_position_b[0])**2) + 
                                  ((end_effector_position_f[1] - end_effector_position_b[1])**2) + 
@@ -209,7 +201,14 @@ class ForwardKinematics(Node):
             position.data = end_effector_position_f
             self.position_publisher.publish(position)
             self.get_logger().info(
-                f"End-Effector Position: x={end_effector_position_f[0]:.2f}, y={end_effector_position_f[1]:.2f}, z={end_effector_position_f[2]:.2f}"
+                f"End-Effector Position1: x={end_effector_position_f[0]:.2f}, y={end_effector_position_f[1]:.2f}, z={end_effector_position_f[2]:.2f}"
+            )
+
+            position2 = Float64MultiArray()
+            position2.data = end_effector_position_b
+            self.position_publisher.publish(position2)
+            self.get_logger().info(
+                f"End-Effector Position2: x={end_effector_position_b[0]:.2f}, y={end_effector_position_b[1]:.2f}, z={end_effector_position_b[2]:.2f}"
             )
 
 
