@@ -113,13 +113,16 @@ class ForwardKinematics(Node):
     def forward_kinematics_f(self, theta1, theta2, theta3):
         # T_0_1 (base_link to leg_front_l_1)
         T_0_1 = self.translation(0.07500, 0.0445, 0) @ self.rotation_y(theta1)
+        print("a",theta1)
         
         # T_1_2 (leg_front_l_1 to leg_front_l_2)
         T_1_2 = self.translation(0, 0.04, 0) @ self.rotation_x(-theta2)
+        print("b",theta2)
        
         
         # T_2_3 (leg_front_l_2 to leg_front_l_3)
         T_2_3 = self.translation(-0.072, 0, -0.06) @ self.rotation_y(theta3)
+        print("c",theta3)
         
 
         # T_3_ee (leg_front_l_3 to end-effector)
@@ -137,12 +140,15 @@ class ForwardKinematics(Node):
     def forward_kinematics_b(self, theta1, theta2, theta3):
         # T_0_1 (base_link to leg_front_l_1)
         T_0_1 = self.translation(-0.07500, 0.0325, 0) @ self.rotation_y(theta1)
+        print("d",theta1)
 
         # T_1_2 (leg_front_l_1 to leg_front_l_2)
         T_1_2 = self.translation(0, 0.04, 0) @ self.rotation_x(theta2)
+        print("e",theta2)
         
         # T_2_3 (leg_front_l_2 to leg_front_l_3)
         T_2_3 = self.translation(-0.072, 0, -0.06) @ self.rotation_y(theta3)
+        print("f",theta3)
 
         # T_3_ee (leg_front_l_3 to end-effector)
         T_3_ee = self.translation(0.095, 0.015, -0.015)
