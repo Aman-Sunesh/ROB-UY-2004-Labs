@@ -166,7 +166,6 @@ class InverseKinematics(Node):
 
     def forward_kinematics(self, theta):
         return np.concatenate([self.fk_functions[i](theta[3*i: 3*i+3]) for i in range(4)])
-        
 
     def listener_callback(self, msg):
         joints_of_interest = [
@@ -185,7 +184,7 @@ class InverseKinematics(Node):
         return float(error @ error)
 
     def inverse_kinematics_single_leg(self, target_ee, leg_index, initial_guess=[0, 0, 0]):
-        self.leg_forward_kinematics = self.fk_functions[leg_index]
+        leg_forward_kinematics = self.fk_functions[leg_index]
         
         res = scipy.optimize.minimize(
             fun=self.get_error_leg,
@@ -195,10 +194,30 @@ class InverseKinematics(Node):
         return res.x
 
     def interpolate_triangle(self, t, leg_index):
-        ################################################################################################
-        # TODO: implement interpolation for all 4 legs here
-        ################################################################################################        
-        return 0
+        # implement interpolation for all 4 legs here
+        leg_waypoint = self.ee_triangle_positions[leg_index]
+        K = 1/6
+        
+        if (t < K):
+            s = (t - 0*K)/K
+            pos = ((1 - s) * leg_waypoint[0]) + (s * leg_waypoint[1])
+        elif (t < 2*K):
+            s = (t - 1*K)/K
+            pos = ((1 - s) * leg_waypoint[1]) + (s * leg_waypoint[2])
+        elif (t < 3*K):
+            s = (t - 2*K)/K
+            pos = ((1 - s) * leg_waypoint[2]) + (s * leg_waypoint[3])
+        elif (t < 4*K):
+            s = (t - 3*K)/K
+            pos = ((1 - s) * leg_waypoint[3]) + (s * leg_waypoint[4])
+        elif (t < 5*K):
+            s = (t - 4*K)/K
+            pos = ((1 - s) * leg_waypoint[4]) + (s * leg_waypoint[5])
+        else:
+            s = (t - 5*K)/K
+            pos = ((1 - s) * leg_waypoint[5]) + (s * leg_waypoint[0])
+            
+        return pos
 
     def cache_target_joint_positions(self):
         # Calculate and store the target joint positions for a cycle and all 4 legs
