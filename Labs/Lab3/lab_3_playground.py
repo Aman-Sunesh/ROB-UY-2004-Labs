@@ -164,8 +164,9 @@ class InverseKinematics():
 
     def interpolate_triangle(self, t, leg_index):
         # implement interpolation for all 4 legs here
+        t = t % 1.0  
         leg_waypoint = self.ee_triangle_positions[leg_index]
-        K = 1/6
+        K = 1.0/6.0
         
         if (t < K):
             s = (t - 0*K)/K
