@@ -134,17 +134,20 @@ class InverseKinematics():
         return np.concatenate([self.fk_functions[i](theta[3*i: 3*i+3]) for i in range(4)])
         
     def get_error_leg(self, theta, desired_position):
-        ################################################################################################
-        # TODO: [already done] paste lab 3 inverse kinematics here
-        ################################################################################################
-        return 0
+        current_position = self.leg_forward_kinematics(theta)
+        error = desired_position - current_position
+
+        return float(error @ error)
 
     def inverse_kinematics_single_leg(self, target_ee, leg_index, initial_guess=[0, 0, 0]):
         self.leg_forward_kinematics = self.fk_functions[leg_index]
-        ################################################################################################
-        # TODO: implement interpolation for all 4 legs here
-        ################################################################################################
-        return 0
+        
+        res = scipy.optimize.minimize(
+            fun=self.get_error_leg,
+            x0=np.array(initial_guess, dtype=float),
+            args=(np.array(target_ee, dtype=float),), 
+        )        
+        return res.x
 
     def interpolate_triangle(self, t, leg_index):
         ################################################################################################
